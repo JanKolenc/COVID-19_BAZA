@@ -18,11 +18,14 @@ library(sodium)
 library(DT)
 library(lubridate)
 library(scales)
+library(RColorBrewer)
+library(grid)
+source("fte_theme.R")
 
 db = 'sem2020_jank'
 host = 'baza.fmf.uni-lj.si'
 user = 'jank'
-password = 'vajinakodazapostgre'
+password = 'ubzbxsrz'
 
 
 #===========================================Generiram Login Page======================================================
@@ -157,9 +160,13 @@ server <- function(input, output, session) {
     st_okuzb <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT datum_testiranja FROM oseba WHERE stanje='bolnik'", con=conn))))
     colnames(st_okuzb)<-c("Datum","St_poz")
     st_okuzb$Datum <- as.Date(factor(st_okuzb$Datum))
-      ggp_st_okuzb <- ggplot((data=st_okuzb),aes(x=st_okuzb$Datum,y=st_okuzb[,2])) +
-      geom_point() +geom_line() + theme_classic()+ geom_hline(yintercept=0, linetype="dashed", color = "blue")+scale_x_date("Datum",labels = date_format("%Y-%m-%d"))+ scale_y_continuous("Št.Pozitivnih st_okuzbov")
-      plot(ggp_st_okuzb)})
+    ggp_st_okuzb <- ggplot((data=st_okuzb),aes(x=st_okuzb$Datum,y=st_okuzb[,2])) +
+      geom_point(color="#c0392b", alpha=0.90, size = 2) + geom_path(color = "black")+ 
+      fte_theme() + geom_hline(yintercept=0, linetype="solid", color = "black")+ 
+      scale_x_date(labels = date_format("%d-%m-%Y"))+ scale_y_continuous() + xlab("Datum") + ylab("Število novo okuženih") + 
+      theme(axis.title.x = element_text(color="black", size=11, face="bold"),
+            axis.title.y = element_text(color="black", size=11, face="bold"))
+    plot(ggp_st_okuzb)})
   
   #===========================================Plot stevilo okuzb skupaj======================================================
   
@@ -174,7 +181,12 @@ server <- function(input, output, session) {
     colnames(st_okuzb)<-c("Datum","St_poz","sestevek")
     st_okuzb$Datum <- as.Date(factor(st_okuzb$Datum))
     ggp_st_okuzb <- ggplot((data=st_okuzb),aes(x=st_okuzb$Datum,y=st_okuzb[,3])) +
-      geom_point() +geom_line() + theme_classic()+ geom_hline(yintercept=0, linetype="dashed", color = "blue")+scale_x_date("Datum",labels = date_format("%Y-%m-%d"))+ scale_y_continuous("Št.Pozitivnih st_okuzbov")
+      geom_point(color="#c0392b", alpha=0.9, size = 2) + geom_path(color="black") +
+      fte_theme() + geom_hline(yintercept=0, linetype="solid", color = "black") + 
+      scale_x_date(labels = date_format("%Y-%m-%d"))+ scale_y_continuous() +
+      xlab("Datum") + ylab("Število pozitivnih okužb") + 
+      theme(axis.title.x = element_text(color="black", size=11, face="bold"),
+            axis.title.y = element_text(color="black", size=11, face="bold"))
     plot(ggp_st_okuzb)})
   
   #===========================================Lista zdravnikov==========================================================
@@ -427,6 +439,36 @@ server <- function(input, output, session) {
 runApp(list(ui = ui, server = server))
 
 
-
+# db = 'sem2020_jank'
+# host = 'baza.fmf.uni-lj.si'
+# user = 'jank'
+# password = 'ubzbxsrz'
+# 
+# drv <- dbDriver("PostgreSQL")
+# conn <- dbConnect(drv, dbname = db, host = host, user = user, password = password)
+# 
+# dbGetQuery(conn, "SET CLIENT_ENCODING TO 'utf8'; SET NAMES 'utf8'")
+# 
+# st_okuzb <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT datum_testiranja FROM oseba WHERE stanje='bolnik'", con=conn))))
+# sestevek<-c(0)
+# for (i in 2:(length(rownames(st_okuzb))+1)){
+#   sestevek <- append(sestevek, as.numeric(sestevek[i-1])+as.numeric(st_okuzb$Freq[i-1]))
+# }
+# sestevek<-sestevek[-1]
+# st_okuzb$sestevek <- sestevek
+# colnames(st_okuzb)<-c("Datum","St_poz","sestevek")
+# st_okuzb$Datum <- as.Date(factor(st_okuzb$Datum))
+# ggp_st_okuzb <- ggplot((data=st_okuzb),aes(x=st_okuzb$Datum,y=st_okuzb[,3])) +
+#   geom_path(color="black", size=1, alpha=0.8, linetype=1) + geom_point(color="#c0392b", alpha=0.8, size = 1.5) +
+#   fte_theme() + geom_hline(yintercept=0, linetype="solid", color = "black") + 
+#   scale_x_date(labels = date_format("%Y-%m-%d"))+ scale_y_continuous() +
+#   xlab("Datum") + ylab("Število pozitivnih okužb") + 
+#   theme(axis.title.x = element_text(color="black", size=10, face="bold"),
+#         axis.title.y = element_text(color="black", size=10, face="bold"))
+# plot(ggp_st_okuzb)
+# 
+# 
+# 
+# dbDisconnect(conn)
 
  

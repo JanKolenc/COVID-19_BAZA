@@ -7,7 +7,7 @@ library(RPostgreSQL)
 db = 'sem2020_jank'
 host = 'baza.fmf.uni-lj.si'
 user = 'jank'
-password = 'vajinakodazapostgre'
+password = 'ubzbxsrz'
 
 
 drv <- dbDriver("PostgreSQL")
@@ -139,4 +139,4 @@ ustvari_tabele()
 insert_data()
 pravice()
 
-source(ui_server.R)
+#source(ui_server.R)
