@@ -1,3 +1,4 @@
+setwd("~/OPB-shiny/podatki")
 library(knitr)
 library(dplyr)
 library(readr)
@@ -13,7 +14,7 @@ oseba <- read_csv("oseba.csv", col_types = cols(
   stanje = col_character()
 ))
 
-
+colnames(oseba) <- c("ime","davcna_st","naslov","datum_testiranja","stanje")
 
 #=============================================LOKACIJE-1.del======================================================================
 
@@ -92,7 +93,13 @@ ima <- as.data.frame(ima_c)
 ima$id_simptomi <- simptomi_c
 ima$jakost <- jakost_c
 ima$datum_pojavitve <- datum_pojavitve_c
-
+colnames(ima) <- c("id_pacienta","id_simptomi","jakost","datum_pojavitve")
 
 
 #=============================================JE_ZDRAVLJEN======================================================================
+
+source(db.R)
+
+
+
+
