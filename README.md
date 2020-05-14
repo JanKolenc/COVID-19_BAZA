@@ -1,7 +1,7 @@
 # Primer spletne aplikacije s Shiny
 
 * [![Shiny](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JanKolenc/OPB-shiny/master?urlpath=shiny/OPB-shiny/OPB-shiny/app/ui_server.R) Aplikacija Shiny
-* [![RStudio](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jaanos/OPB-shiny/master?urlpath=rstudio) RStudio
+* [![RStudio](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JanKolenc/OPB-shiny/master?urlpath=rstudio) RStudio
 
 
 Ta repozitorij vsebuje minimalen primer spletne aplikacije z ogrodjem [Shiny](https://shiny.rstudio.com/) in povezavo na podatkovno bazo [PostgreSQL](https://www.postgresql.org/) za potrebe predmeta [Osnove podatkovnih baz](https://github.com/jaanos/OPB).
