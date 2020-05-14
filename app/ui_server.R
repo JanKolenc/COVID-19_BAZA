@@ -1,4 +1,3 @@
-
 library(knitr)
 library(dplyr)
 library(readr)
@@ -21,6 +20,7 @@ library(scales)
 library(RColorBrewer)
 library(grid)
 
+setwd("~/OPB-shiny/app")
 source("fte_theme.R")
 source("auth.R")
 
