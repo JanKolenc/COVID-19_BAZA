@@ -1,6 +1,6 @@
 # Primer spletne aplikacije s Shiny
 
-* [![Shiny](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JanKolenc/OPB-shiny/master?urlpath=shiny/OPB-shiny/app/) Aplikacija Shiny
+* [![Shiny](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/JanKolenc/OPB-shiny/master?urlpath=shiny/OPB-shiny/OPB-shiny/app/ui_server.R) Aplikacija Shiny
 * [![RStudio](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jaanos/OPB-shiny/master?urlpath=rstudio) RStudio
 
 
