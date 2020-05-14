@@ -22,7 +22,9 @@ library(grid)
 
 setwd("~/OPB-shiny/app")
 source("fte_theme.R")
-source("auth.R")
+db = 0
+try(source("auth.R"))
+if (db == 0){source("auth_public.R")}
 
 #===========================================Generiram Login Page======================================================
 loginpage <- div(id = "loginpage", style = "width: 500px; max-width: 100%; margin: 0 auto; padding: 20px;",
