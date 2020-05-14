@@ -20,9 +20,8 @@ library(lubridate)
 library(scales)
 library(RColorBrewer)
 library(grid)
+
 source("fte_theme.R")
-
-
 source("auth.R")
 
 #===========================================Generiram Login Page======================================================

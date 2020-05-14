@@ -1,7 +1,0 @@
-# Skopiraj datoteko v auth.py ali auth.R in vnesi podatke za priklop na bazo
-auth <- list(
-  db='sem2020_uporabnik',
-  host='baza.fmf.uni-lj.si',
-  user='uporabnik',
-  password='geslo'
-)
