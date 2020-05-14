@@ -98,7 +98,6 @@ colnames(ima) <- c("id_pacienta","id_simptomi","jakost","datum_pojavitve")
 
 #=============================================JE_ZDRAVLJEN======================================================================
 
-#source(db.R)
 
 
 

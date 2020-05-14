@@ -22,11 +22,8 @@ library(RColorBrewer)
 library(grid)
 source("fte_theme.R")
 
-db = 'sem2020_jank'
-host = 'baza.fmf.uni-lj.si'
-user = 'jank'
-password = 'ubzbxsrz'
 
+source("auth.R")
 
 #===========================================Generiram Login Page======================================================
 loginpage <- div(id = "loginpage", style = "width: 500px; max-width: 100%; margin: 0 auto; padding: 20px;",
@@ -53,13 +50,6 @@ loginpage <- div(id = "loginpage", style = "width: 500px; max-width: 100%; margi
                    ))
 )
 
-#===========================================Dodelim app access======================================================
-credentials = data.frame(
-  username_id = c("jan", "aljosa","filip","gost"),
-  password   = sapply(c("opb", "opb","opb","gost"),password_store),
-  permission  = c("advanced", "advanced","advanced","basic"), 
-  stringsAsFactors = F
-)
 
 #===========================================lepotni nastavki=====================================================
 
