@@ -2,12 +2,11 @@ library(dplyr)
 library(dbplyr)
 library(RPostgreSQL)
 
+setwd("~/OPB-shiny/app")
+source("auth.R")
+setwd("~/OPB-shiny/uvoz")
+source("tabele.R")
 
-
-db = 'sem2020_jank'
-host = 'baza.fmf.uni-lj.si'
-user = 'jank'
-password = 'ubzbxsrz'
 
 
 drv <- dbDriver("PostgreSQL")
