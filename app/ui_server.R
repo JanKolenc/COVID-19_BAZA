@@ -137,7 +137,8 @@ server <- function(input, output, session) {
       }
       else{
         sidebarMenu(
-        menuItem("Statistični podatki", tabName = "dashboard", icon = icon("dashboard"))
+        menuItem("Statistični podatki", tabName = "dashboard", icon = icon("dashboard")),
+        menuItem("Seznam bolnisnic", tabName = "Bolnisnice", icon = icon("th"))
          
         )
         
@@ -314,9 +315,14 @@ server <- function(input, output, session) {
               box(width = 12, title = 'Število novih okužb z COVID-19', plotOutput("ggp_st_okuzb"))),
               fluidRow(
                 box(width = 12, title = 'Skupno število potrjenih okužb z COVID-19', plotOutput("ggp_st_okuzb_skupaj")))
-            ))
+            )),
+          tabItem(
+            tabName ="Bolnisnice",
+            fluidRow(
+              box(width = 12, title = "Podatki o bolnisnicah", dataTableOutput('results_b'))
+            )
+          )
         )
-        
       }
       
     }
