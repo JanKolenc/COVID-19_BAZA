@@ -20,6 +20,8 @@ library(scales)
 library(RColorBrewer)
 library(grid)
 
+options(encoding = 'UTF-8')
+
 setwd("~/OPB-shiny/app")
 source("fte_theme.R")
 db = 0
