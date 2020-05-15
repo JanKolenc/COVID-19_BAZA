@@ -6,6 +6,9 @@
 
 Ta repozitorij vsebuje minimalen primer spletne aplikacije z ogrodjem [Shiny](https://shiny.rstudio.com/) in povezavo na podatkovno bazo [PostgreSQL](https://www.postgresql.org/) za potrebe predmeta [Osnove podatkovnih baz](https://github.com/jaanos/OPB).
 
+<center>
+![](podatki/ER_diagram.jpg)
+</center>
 
 ## Aplikacija
 
