@@ -54,7 +54,7 @@ loginpage <- div(id = "loginpage", style = "width: 500px; max-width: 100%; margi
 )
 
 
-#===========================================lepotni nastavki=====================================================
+  #===========================================lepotni nastavki=====================================================
 
 header <- dashboardHeader( title = "COVID-19 BAZA OKUŽB", uiOutput("logoutbtn"))
 
@@ -62,7 +62,8 @@ sidebar <- dashboardSidebar(uiOutput("sidebarpanel"))
 body <- dashboardBody(shinyjs::useShinyjs(), uiOutput("body"))
 ui<-dashboardPage(header, sidebar, body, skin = "blue")
 
-#===========================================Kar bo obvezno za dopolnit v obrazec======================================================
+  #===========================================Kar bo obvezno za dopolnit v obrazec======================================================
+
 fieldsMandatory <- c("ime")
 
 labelMandatory <- function(label) {
@@ -79,7 +80,9 @@ server <- function(input, output, session) {
   
   login = FALSE
   USER <- reactiveValues(login = login)
+  
   #===========================================DB conneciton==============================================================
+  
   drv <- dbDriver("PostgreSQL")
   conn <- dbConnect(drv, dbname = db, host = host, user = user, password = password)
   
@@ -90,6 +93,7 @@ server <- function(input, output, session) {
   })
   
   #===========================================Access checkpoint==============================================================
+  
   observe({ 
     if (USER$login == FALSE) {
       if (!is.null(input$login)) {
@@ -115,6 +119,7 @@ server <- function(input, output, session) {
   })
   
   #===========================================logout button================================================================
+  
   output$logoutbtn <- renderUI({
     req(USER$login)
     tags$li(a(icon("fa fa-sign-out"), "Logout", 
@@ -123,7 +128,9 @@ server <- function(input, output, session) {
             style = "background-color: #ffffff !important; border: 0;
             font-weight: bold; margin:5px; padding: 10px;")
   })
+  
   #===========================================Ločeno kaj vidi akreditiran uporabnik in kaj vsi======================================================
+  
   output$sidebarpanel <- renderUI({
     if (USER$login == TRUE ){ 
       if (credentials[,"permission"][which(credentials$username_id==input$userName)]=="advanced") {
@@ -215,15 +222,17 @@ server <- function(input, output, session) {
     plot(histogram_zasedenost)})
   
   #===========================================Lista zdravnikov==========================================================
+  
   zdravniki <- dbGetQuery(conn, build_sql("SELECT ime FROM oseba WHERE stanje = 'zd_delavec_na_dolznosti'", con=conn))
   zdravniki <- zdravniki$ime
   
-  #===========================================Generiram zdravnikov page======================================================
+  #===========================================Generiram zdravnikov page=================================================
   
   output$body <- renderUI({
     if (USER$login == TRUE ) {
       if (credentials[,"permission"][which(credentials$username_id==input$userName)]=="advanced") {
-        #===========================================Sidebar======================================================      
+        
+  #===========================================Sidebar===================================================================    
         tabItems(
           tabItem(
             tabName ="dashboard", class = "active",
@@ -276,7 +285,7 @@ server <- function(input, output, session) {
                                 background-color: #FFCCCC;
                                 }")),
                 
-                #==========================================Obrazec za dodajanje ljudi====================================================== 
+  #==========================================Obrazec za dodajanje ljudi=========================================================
 
                 useShinyjs(),
                 shinyjs::inlineCSS(appCSS),
@@ -342,7 +351,9 @@ server <- function(input, output, session) {
         )
       } 
       else {
-        #===========================================Generiram page za javnost======================================================
+        
+  #===========================================Generiram page za javnost======================================
+        
         tabItems(
           tabItem(
             tabName ="dashboard", class = "active",
@@ -367,7 +378,9 @@ server <- function(input, output, session) {
       loginpage
     }
   })
-  #===========================================Pridobim tabele iz baze======================================================
+  
+  #===========================================Pridobim tabele iz baze=========================================
+  
   output$results <- DT::renderDataTable({
     dbGetQuery(conn, build_sql("SELECT * FROM oseba", con=conn))
   })
@@ -386,7 +399,8 @@ server <- function(input, output, session) {
   
   #==========================================Polnenje DB======================================================
   observe({
-    #===========================================Checkpoint obvezna polja======================================================
+  #===========================================Checkpoint obvezna polja========================================
+    
     mandatoryFilled <-
       vapply(fieldsMandatory,
              function(x) {
@@ -403,15 +417,9 @@ server <- function(input, output, session) {
     
       dbGetQuery(conn, build_sql("INSERT INTO oseba (ime, davcna_st, naslov, datum_testiranja, stanje)
                                              VALUES (", input$ime, ",", input$davcna, ", ", input$naslov, ",", input$dat, ", ", input$stanje,")", con = conn))
-    #===========================================ta del je treba popravit======================================================
-        # if (input$hospitalizacija == TRUE){
-        #   c<-paste0("SELECT davcna_st FROM oseba WHERE ime = ","'",as.name('Nolly Glazzard'),"'",sep="")
-        #   id_zdravnika <- dbGetQuery(conn, build_sql(c, con = conn))
-        #   id_zdravnika <- id_zdravnika$id_zdravnika[1]
-        #   dbGetQuery(conn, build_sql("INSERT INTO bolnik (id_pacienta, id_zdravnika, hospitalizacija)
-        #                              VALUES (", input$davcna, ",", id_zdravnika, ",", 1,")", con = conn))
-        # }
-    #===========================================================================================================================  
+    
+ #============================================================================================================  
+    
         if (input$agevzija == TRUE){
           dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
                                              VALUES (", input$davcna, ",", 9, ",", input$agevzija_j, ",", input$agevzija_dat,")", con = conn))
@@ -471,50 +479,4 @@ server <- function(input, output, session) {
   }
 
 runApp(list(ui = ui, server = server))
-
-
-# db = 'sem2020_jank'
-# host = 'baza.fmf.uni-lj.si'
-# user = 'jank'
-# password = 'ubzbxsrz'
-# 
-# drv <- dbDriver("PostgreSQL")
-# conn <- dbConnect(drv, dbname = db, host = host, user = user, password = password)
-# 
-# dbGetQuery(conn, "SET CLIENT_ENCODING TO 'utf8'; SET NAMES 'utf8'")
-# 
-# 
-# 
-#   st_pacientov_zdravnik <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT id_zdravnika FROM bolnik", con=conn))))
-#   zdravnik_lokacija <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT * FROM zd_delavec_na_dolznosti", con=conn))))
-#   lokacije_postelje <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT * FROM lokacije", con=conn))))
-#   lokacija <- read_csv("~/OPB-Shiny/podatki/lokacije.csv",col_types = cols(
-#     id = col_integer(),
-#     lokacija = col_character()
-#   ))
-#   zdravnik_lokacija <- filter(zdravnik_lokacija, Freq == 1 )
-#   lokacije_postelje <- filter(lokacije_postelje, Freq == 1)
-#   zdravnik_lokacija <- zdravnik_lokacija %>% select(id, zd_ustanova_id_c)
-#   lokacija <- lokacija %>% select(id, lokacija)
-#   podatki1 <- merge(y = lokacija,x = zdravnik_lokacija, by.x='zd_ustanova_id_c', by.y = 'id')
-#   podatki2 <- merge(y = podatki1,x = st_pacientov_zdravnik, by.x='Var1', by.y = 'id')
-#   podatki3 <- podatki2 %>% group_by(lokacija) %>% summarise(stevilo_pacientov = sum(Freq))
-#   podatki <- merge(y = podatki3,x = lokacije_postelje, by.x='lokacija', by.y = 'lokacija')
-#   podatki <- podatki %>% select(lokacija, st_postelj, stevilo_pacientov)
-#   podatki <- as.data.frame(podatki)
-#   podatki_hist <- gather(podatki, -lokacija, key = "lastnost", value = "vrednost")
-#   podatki_hist <- as.data.frame(podatki_hist)
-#   podatki_hist[,3] <- as.numeric(podatki_hist[,3])
-#   podatki_hist$lastnost[podatki_hist$lastnost == 'st_postelj'] <- 'Število postelj'
-#   podatki_hist$lastnost[podatki_hist$lastnost == 'stevilo_pacientov'] <- 'Število pacientov'
-#   histogram_zasedenost <- ggplot(data = podatki_hist, aes(x = lokacija, y = vrednost, fill = lastnost)) +
-#     geom_bar(stat = 'identity',position = 'dodge2') + xlab("Lokacija") + ylab("Število") + 
-#     theme(axis.title.x = element_text(color="black", size=11, face="bold"),
-#           axis.title.y = element_text(color="black", size=11, face="bold"))
-#   plot(histogram_zasedenost)
-# 
-# 
-# 
-# dbDisconnect(conn)
-
  

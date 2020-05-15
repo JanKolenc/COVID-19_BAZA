@@ -137,5 +137,3 @@ delete_table()
 ustvari_tabele()
 insert_data()
 pravice()
-
-

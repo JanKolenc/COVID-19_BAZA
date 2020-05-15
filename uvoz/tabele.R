@@ -18,15 +18,12 @@ colnames(oseba) <- c("ime","davcna_st","naslov","datum_testiranja","stanje")
 
 #=============================================LOKACIJE-1.del======================================================================
 
-
-
 lokacije <- read_csv("lokacije.csv",col_types = cols(
   id = col_integer(),
   lokacija = col_character(),
   st_postelj = col_integer(),
   st_zdravnikov = col_integer()
 ))
-
 
 #=============================================SIMPTOM======================================================================
 
@@ -43,6 +40,7 @@ zd_ustanova_id_c <- sample.int(length(rownames(lokacije)),length(zd_delavec_na_d
 zd_delavec_na_dolznosti <- as.data.frame(zd_delavec_na_dolznosti_c)
 zd_delavec_na_dolznosti$zd_ustanova_id <- zd_ustanova_id_c
 colnames(zd_delavec_na_dolznosti)<- c("id","zd_ustanova_id_c")
+
 #=============================================LOKACIJE-2.del======================================================================
 
 st_postelj <- c()
@@ -55,7 +53,6 @@ for (i in 1:length(lokacije$id)){
 
 lokacije$st_postelj <- st_postelj
 lokacije$st_zdravnikov <- st_zdravnikov
-
 
 #=============================================BOLNIK======================================================================
 
@@ -94,11 +91,3 @@ ima$id_simptomi <- simptomi_c
 ima$jakost <- jakost_c
 ima$datum_pojavitve <- datum_pojavitve_c
 colnames(ima) <- c("id_pacienta","id_simptomi","jakost","datum_pojavitve")
-
-
-#=============================================JE_ZDRAVLJEN======================================================================
-
-
-
-
-
