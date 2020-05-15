@@ -181,6 +181,37 @@ server <- function(input, output, session) {
             axis.title.y = element_text(color="black", size=11, face="bold"))
     plot(ggp_st_okuzb)})
   
+  #===========================================histogram zasedenost bolnisnic =======================================================
+  
+  output$histogram_zasedenost <- renderPlot({ 
+    st_pacientov_zdravnik <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT id_zdravnika FROM bolnik", con=conn))))
+    zdravnik_lokacija <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT * FROM zd_delavec_na_dolznosti", con=conn))))
+    lokacije_postelje <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT * FROM lokacije", con=conn))))
+    lokacija <- read_csv("~/OPB-Shiny/podatki/lokacije.csv",col_types = cols(
+      id = col_integer(),
+      lokacija = col_character()
+    ))
+    zdravnik_lokacija <- filter(zdravnik_lokacija, Freq == 1 )
+    lokacije_postelje <- filter(lokacije_postelje, Freq == 1)
+    zdravnik_lokacija <- zdravnik_lokacija %>% select(id, zd_ustanova_id_c)
+    lokacija <- lokacija %>% select(id, lokacija)
+    podatki1 <- merge(y = lokacija,x = zdravnik_lokacija, by.x='zd_ustanova_id_c', by.y = 'id')
+    podatki2 <- merge(y = podatki1,x = st_pacientov_zdravnik, by.x='Var1', by.y = 'id')
+    podatki3 <- podatki2 %>% group_by(lokacija) %>% summarise(stevilo_pacientov = sum(Freq))
+    podatki <- merge(y = podatki3,x = lokacije_postelje, by.x='lokacija', by.y = 'lokacija')
+    podatki <- podatki %>% select(lokacija, st_postelj, stevilo_pacientov)
+    podatki <- as.data.frame(podatki)
+    podatki_hist <- gather(podatki, -lokacija, key = "lastnost", value = "vrednost")
+    podatki_hist <- as.data.frame(podatki_hist)
+    podatki_hist[,3] <- as.numeric(podatki_hist[,3])
+    podatki_hist$lastnost[podatki_hist$lastnost == 'st_postelj'] <- 'Število postelj'
+    podatki_hist$lastnost[podatki_hist$lastnost == 'stevilo_pacientov'] <- 'Število pacientov'
+    histogram_zasedenost <- ggplot(data = podatki_hist, aes(x = lokacija, y = vrednost, fill = lastnost)) +
+      geom_bar(stat = 'identity',position = 'dodge2') + xlab("Lokacija") + ylab("Število") + 
+      theme(axis.title.x = element_text(color="black", size=11, face="bold"),
+            axis.title.y = element_text(color="black", size=11, face="bold"))
+    plot(histogram_zasedenost)})
+  
   #===========================================Lista zdravnikov==========================================================
   zdravniki <- dbGetQuery(conn, build_sql("SELECT ime FROM oseba WHERE stanje = 'zd_delavec_na_dolznosti'", con=conn))
   zdravniki <- zdravniki$ime
@@ -195,9 +226,11 @@ server <- function(input, output, session) {
           tabItem(
             tabName ="dashboard", class = "active",
             div(fluidRow(
-              box(width = 12, title = 'Število novih okužb z COVID-19', plotOutput("ggp_st_okuzb"))),
-              fluidRow(
-                box(width = 12, title = 'Skupno število potrjenih okužb z COVID-19', plotOutput("ggp_st_okuzb_skupaj")))
+                  box(width = 12, title = 'Število novih okužb z COVID-19', plotOutput("ggp_st_okuzb"))),
+                fluidRow(
+                  box(width = 12, title = 'Skupno število potrjenih okužb z COVID-19', plotOutput("ggp_st_okuzb_skupaj"))),
+                fluidRow(
+                  box(width = 12, title = 'Histogram zasedenosti bolnišnic', plotOutput("histogram_zasedenost")))
             ))
           ,
           tabItem(
@@ -312,9 +345,11 @@ server <- function(input, output, session) {
           tabItem(
             tabName ="dashboard", class = "active",
             div(fluidRow(
-              box(width = 12, title = 'Število novih okužb z COVID-19', plotOutput("ggp_st_okuzb"))),
-              fluidRow(
-                box(width = 12, title = 'Skupno število potrjenih okužb z COVID-19', plotOutput("ggp_st_okuzb_skupaj")))
+                  box(width = 12, title = 'Število novih okužb z COVID-19', plotOutput("ggp_st_okuzb"))),
+                fluidRow(
+                  box(width = 12, title = 'Skupno število potrjenih okužb z COVID-19', plotOutput("ggp_st_okuzb_skupaj"))),
+                fluidRow(
+                  box(width = 12, title = 'Histogram zasedenosti bolnišnic', plotOutput("histogram_zasedenost")))
             )),
           tabItem(
             tabName ="Bolnisnice",
@@ -446,23 +481,35 @@ runApp(list(ui = ui, server = server))
 # 
 # dbGetQuery(conn, "SET CLIENT_ENCODING TO 'utf8'; SET NAMES 'utf8'")
 # 
-# st_okuzb <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT datum_testiranja FROM oseba WHERE stanje='bolnik'", con=conn))))
-# sestevek<-c(0)
-# for (i in 2:(length(rownames(st_okuzb))+1)){
-#   sestevek <- append(sestevek, as.numeric(sestevek[i-1])+as.numeric(st_okuzb$Freq[i-1]))
-# }
-# sestevek<-sestevek[-1]
-# st_okuzb$sestevek <- sestevek
-# colnames(st_okuzb)<-c("Datum","St_poz","sestevek")
-# st_okuzb$Datum <- as.Date(factor(st_okuzb$Datum))
-# ggp_st_okuzb <- ggplot((data=st_okuzb),aes(x=st_okuzb$Datum,y=st_okuzb[,3])) +
-#   geom_path(color="black", size=1, alpha=0.8, linetype=1) + geom_point(color="#c0392b", alpha=0.8, size = 1.5) +
-#   fte_theme() + geom_hline(yintercept=0, linetype="solid", color = "black") + 
-#   scale_x_date(labels = date_format("%Y-%m-%d"))+ scale_y_continuous() +
-#   xlab("Datum") + ylab("Število pozitivnih okužb") + 
-#   theme(axis.title.x = element_text(color="black", size=10, face="bold"),
-#         axis.title.y = element_text(color="black", size=10, face="bold"))
-# plot(ggp_st_okuzb)
+# 
+# 
+#   st_pacientov_zdravnik <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT id_zdravnika FROM bolnik", con=conn))))
+#   zdravnik_lokacija <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT * FROM zd_delavec_na_dolznosti", con=conn))))
+#   lokacije_postelje <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT * FROM lokacije", con=conn))))
+#   lokacija <- read_csv("~/OPB-Shiny/podatki/lokacije.csv",col_types = cols(
+#     id = col_integer(),
+#     lokacija = col_character()
+#   ))
+#   zdravnik_lokacija <- filter(zdravnik_lokacija, Freq == 1 )
+#   lokacije_postelje <- filter(lokacije_postelje, Freq == 1)
+#   zdravnik_lokacija <- zdravnik_lokacija %>% select(id, zd_ustanova_id_c)
+#   lokacija <- lokacija %>% select(id, lokacija)
+#   podatki1 <- merge(y = lokacija,x = zdravnik_lokacija, by.x='zd_ustanova_id_c', by.y = 'id')
+#   podatki2 <- merge(y = podatki1,x = st_pacientov_zdravnik, by.x='Var1', by.y = 'id')
+#   podatki3 <- podatki2 %>% group_by(lokacija) %>% summarise(stevilo_pacientov = sum(Freq))
+#   podatki <- merge(y = podatki3,x = lokacije_postelje, by.x='lokacija', by.y = 'lokacija')
+#   podatki <- podatki %>% select(lokacija, st_postelj, stevilo_pacientov)
+#   podatki <- as.data.frame(podatki)
+#   podatki_hist <- gather(podatki, -lokacija, key = "lastnost", value = "vrednost")
+#   podatki_hist <- as.data.frame(podatki_hist)
+#   podatki_hist[,3] <- as.numeric(podatki_hist[,3])
+#   podatki_hist$lastnost[podatki_hist$lastnost == 'st_postelj'] <- 'Število postelj'
+#   podatki_hist$lastnost[podatki_hist$lastnost == 'stevilo_pacientov'] <- 'Število pacientov'
+#   histogram_zasedenost <- ggplot(data = podatki_hist, aes(x = lokacija, y = vrednost, fill = lastnost)) +
+#     geom_bar(stat = 'identity',position = 'dodge2') + xlab("Lokacija") + ylab("Število") + 
+#     theme(axis.title.x = element_text(color="black", size=11, face="bold"),
+#           axis.title.y = element_text(color="black", size=11, face="bold"))
+#   plot(histogram_zasedenost)
 # 
 # 
 # 
