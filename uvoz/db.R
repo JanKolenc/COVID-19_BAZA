@@ -52,8 +52,8 @@ ustvari_tabele <- function(){
     
     
     ima <- dbSendQuery(conn, build_sql("CREATE TABLE ima (
-                                              id_pacienta bigserial REFERENCES oseba(davcna_st),
-                                              id_simptomi bigserial REFERENCES simptom(id),
+                                              id_pacienta bigint REFERENCES oseba(davcna_st),
+                                              id_simptomi bigint REFERENCES simptom(id),
                                               jakost integer,
                                               datum_pojavitve date,
                                               unique (id_pacienta, id_simptomi))", con=conn))
@@ -61,14 +61,14 @@ ustvari_tabele <- function(){
     
     
     bolnik <- dbSendQuery(conn, build_sql("CREATE TABLE bolnik (
-                                             id_bolnika bigserial REFERENCES oseba(davcna_st),
-                                             id_zdravnika bigserial REFERENCES oseba(davcna_st),
+                                             id_bolnika bigint REFERENCES oseba(davcna_st),
+                                             id_zdravnika bigint REFERENCES oseba(davcna_st),
                                              hospitalizacija numeric,
                                              unique (id_bolnika, id_zdravnika))", con=conn))
     
     
     zd_delavec_na_dolznosti <- dbSendQuery(conn, build_sql("CREATE TABLE zd_delavec_na_dolznosti (
-                                          id bigserial REFERENCES oseba(davcna_st),
+                                          id bigint REFERENCES oseba(davcna_st),
                                           zd_ustanova_id_c bigserial REFERENCES lokacije(id))", con=conn))
     
     
