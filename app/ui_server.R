@@ -393,7 +393,11 @@ server <- function(input, output, session) {
     dbGetQuery(conn, build_sql("SELECT * FROM ima", con=conn))
   })
   output$results_h <- DT::renderDataTable({
-    dbGetQuery(conn, build_sql("SELECT * FROM bolnik", con=conn))
+    dbGetQuery(conn, build_sql("SELECT 
+                                  id_bolnika AS id bolnika, ime_bolnika, id_zdravnika, ime_zdravnika
+                                FROM bolnik 
+                                  LEFT JOIN (SELECT ime AS ime_bolnika, davcna_st FROM oseba WHERE stanje = 'bolnik') as oseba1 ON bolnik.id_bolnika=oseba1.davcna_st
+                                  LEFT JOIN (SELECT ime AS ime_zdravnika, davcna_st FROM oseba WHERE stanje = 'zd_delavec_na_dolznosti') as oseba2 ON bolnik.id_zdravnika=oseba2.davcna_st", con=conn))
   })
   
   #==========================================Polnenje DB======================================================
