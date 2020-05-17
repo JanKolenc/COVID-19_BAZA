@@ -191,19 +191,17 @@ server <- function(input, output, session) {
             axis.title.y = element_text(color="black", size=11, face="bold"))
     plot(ggp_st_okuzb)})
   
-  #===========================================histogram zasedenost bolnisnic =======================================================
+  #===========================================stolpicni diagram zasedenost bolnisnic =======================================================
   
-  output$histogram_zasedenost <- renderPlot({ 
+  output$diagram_zasedenost <- renderPlot({ 
     st_pacientov_zdravnik <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT id_zdravnika FROM bolnik", con=conn))))
     zdravnik_lokacija <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT * FROM zd_delavec_na_dolznosti", con=conn))))
     lokacije_postelje <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT * FROM lokacije", con=conn))))
-    lokacija <- read_csv("~/OPB-Shiny/podatki/lokacije.csv",col_types = cols(
-      id = col_integer(),
-      lokacija = col_character()
-    ))
+    lokacija <- as.data.frame(table(dbGetQuery(conn, build_sql("SELECT id, lokacija FROM lokacije", con=conn))))
     zdravnik_lokacija <- filter(zdravnik_lokacija, Freq == 1 )
     lokacije_postelje <- filter(lokacije_postelje, Freq == 1)
     zdravnik_lokacija <- zdravnik_lokacija %>% select(id, zd_ustanova_id_c)
+    lokacija <- filter(lokacija, Freq == 1)
     lokacija <- lokacija %>% select(id, lokacija)
     podatki1 <- merge(y = lokacija,x = zdravnik_lokacija, by.x='zd_ustanova_id_c', by.y = 'id')
     podatki2 <- merge(y = podatki1,x = st_pacientov_zdravnik, by.x='Var1', by.y = 'id')
@@ -211,16 +209,16 @@ server <- function(input, output, session) {
     podatki <- merge(y = podatki3,x = lokacije_postelje, by.x='lokacija', by.y = 'lokacija')
     podatki <- podatki %>% select(lokacija, st_postelj, stevilo_pacientov)
     podatki <- as.data.frame(podatki)
-    podatki_hist <- gather(podatki, -lokacija, key = "lastnost", value = "vrednost")
-    podatki_hist <- as.data.frame(podatki_hist)
-    podatki_hist[,3] <- as.numeric(podatki_hist[,3])
-    podatki_hist$lastnost[podatki_hist$lastnost == 'st_postelj'] <- 'Število postelj'
-    podatki_hist$lastnost[podatki_hist$lastnost == 'stevilo_pacientov'] <- 'Število pacientov'
-    histogram_zasedenost <- ggplot(data = podatki_hist, aes(x = lokacija, y = vrednost, fill = lastnost)) +
+    podatki_diag <- gather(podatki, -lokacija, key = "lastnost", value = "vrednost")
+    podatki_diag <- as.data.frame(podatki_diag)
+    podatki_diag[,3] <- as.numeric(podatki_diag[,3])
+    podatki_diag$lastnost[podatki_diag$lastnost == 'st_postelj'] <- 'Število postelj'
+    podatki_diag$lastnost[podatki_diag$lastnost == 'stevilo_pacientov'] <- 'Število pacientov'
+    diagram_zasedenost <- ggplot(data = podatki_diag, aes(x = lokacija, y = vrednost, fill = lastnost)) +
       geom_bar(stat = 'identity',position = 'dodge2') + xlab("Lokacija") + ylab("Število") + 
       theme(axis.title.x = element_text(color="black", size=11, face="bold"),
             axis.title.y = element_text(color="black", size=11, face="bold"))
-    plot(histogram_zasedenost)})
+    plot(diagram_zasedenost)})
   
   #===========================================Lista zdravnikov==========================================================
   
@@ -242,7 +240,7 @@ server <- function(input, output, session) {
                 fluidRow(
                   box(width = 12, title = 'Skupno število potrjenih okužb z COVID-19', plotOutput("ggp_st_okuzb_skupaj"))),
                 fluidRow(
-                  box(width = 12, title = 'Histogram zasedenosti bolnišnic', plotOutput("histogram_zasedenost")))
+                  box(width = 12, title = 'Stolpični diagram zasedenosti bolnišnic', plotOutput("diagram_zasedenost")))
             ))
           ,
           tabItem(
@@ -363,7 +361,7 @@ server <- function(input, output, session) {
                 fluidRow(
                   box(width = 12, title = 'Skupno število potrjenih okužb z COVID-19', plotOutput("ggp_st_okuzb_skupaj"))),
                 fluidRow(
-                  box(width = 12, title = 'Histogram zasedenosti bolnišnic', plotOutput("histogram_zasedenost")))
+                  box(width = 12, title = 'Stolpični diagram zasedenosti bolnišnic', plotOutput("diagram_zasedenost")))
             )),
           tabItem(
             tabName ="Bolnisnice",
