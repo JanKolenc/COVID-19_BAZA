@@ -22,21 +22,22 @@ library(grid)
 
 options(encoding = 'UTF-8')
 
-source("fte_theme.R")
+# setwd("~/OPB-shiny/app")
+# source("fte_theme.R")
+# source("credentials.R")
+# db = 0
+# try(source("auth.R"))
+# if (db == 0){source("auth_public.R")}
+source("auth.R")
 source("credentials.R")
-db = 0
-try(source("auth.R"))
-if (db == 0){source("auth_public.R")}
+
+#===========================================Generiram Login Page======================================================
+
+#===========================================lepotni nastavki=====================================================
 
 
 
-header <- dashboardHeader( title = "COVID-19 BAZA OKUŽB", uiOutput("logoutbtn"))
-
-sidebar <- dashboardSidebar(uiOutput("sidebarpanel")) 
-body <- dashboardBody(shinyjs::useShinyjs(), uiOutput("body"))
-ui<-dashboardPage(header, sidebar, body, skin = "blue")
-
-  #===========================================Kar bo obvezno za dopolnit v obrazec======================================================
+#===========================================Kar bo obvezno za dopolnit v obrazec======================================================
 
 fieldsMandatory <- c("ime")
 
@@ -51,7 +52,6 @@ appCSS <-
   ".mandatory_star { color: red; }"
 
 server <- function(input, output, session) {
-  
   loginpage <- div(id = "loginpage", style = "width: 500px; max-width: 100%; margin: 0 auto; padding: 20px;",
                    wellPanel(
                      tags$h2("Prijava", class = "text-center", style = "padding-top: 0;color:#333; font-weight:600;"),
@@ -61,20 +61,20 @@ server <- function(input, output, session) {
                      div(
                        style = "text-align: center;",
                        actionButton("login", "Prijava", style = "color: white; background-color:#DF3232;
-                                  padding: 10px 15px; width: 150px; cursor: pointer;
-                                  font-size: 18px; font-weight: 600;"),
+                                    padding: 10px 15px; width: 150px; cursor: pointer;
+                                    font-size: 18px; font-weight: 600;"),
                        shinyjs::hidden(
                          div(id = "nomatch",
                              tags$p("Napačno uporabniško ime ali geslo!",
                                     style = "color: red; font-weight: 600; 
-                                  padding-top: 5px;font-size:16px;", 
+                                    padding-top: 5px;font-size:16px;", 
                                     class = "text-center"))),
                        br(),
                        br(),
                        tags$code("Uporabnik: gost  Geslo: gost"),
                        br()
-                     ))
-  )
+                       ))
+                       )
   
   
   
@@ -146,9 +146,9 @@ server <- function(input, output, session) {
       }
       else{
         sidebarMenu(
-        menuItem("Statistični podatki", tabName = "dashboard", icon = icon("dashboard")),
-        menuItem("Seznam bolnisnic", tabName = "Bolnisnice", icon = icon("th"))
-         
+          menuItem("Statistični podatki", tabName = "dashboard", icon = icon("dashboard")),
+          menuItem("Seznam bolnisnic", tabName = "Bolnisnice", icon = icon("th"))
+          
         )
         
       }
@@ -230,16 +230,16 @@ server <- function(input, output, session) {
     if (USER$login == TRUE ) {
       if (credentials[,"permission"][which(credentials$username_id==input$userName)]=="advanced") {
         
-  #===========================================Sidebar===================================================================    
+        #===========================================Sidebar===================================================================    
         tabItems(
           tabItem(
             tabName ="dashboard", class = "active",
             div(fluidRow(
-                  box(width = 12, title = 'Število novih okužb z COVID-19', plotOutput("ggp_st_okuzb"))),
-                fluidRow(
-                  box(width = 12, title = 'Skupno število potrjenih okužb z COVID-19', plotOutput("ggp_st_okuzb_skupaj"))),
-                fluidRow(
-                  box(width = 12, title = 'Stolpični diagram zasedenosti bolnišnic', plotOutput("diagram_zasedenost")))
+              box(width = 12, title = 'Število novih okužb z COVID-19', plotOutput("ggp_st_okuzb"))),
+              fluidRow(
+                box(width = 12, title = 'Skupno število potrjenih okužb z COVID-19', plotOutput("ggp_st_okuzb_skupaj"))),
+              fluidRow(
+                box(width = 12, title = 'Stolpični diagram zasedenosti bolnišnic', plotOutput("diagram_zasedenost")))
             ))
           ,
           tabItem(
@@ -283,12 +283,12 @@ server <- function(input, output, session) {
                                 background-color: #FFCCCC;
                                 }")),
                 
-  #==========================================Obrazec za dodajanje ljudi=========================================================
-
+                #==========================================Obrazec za dodajanje ljudi=========================================================
+                
                 useShinyjs(),
                 shinyjs::inlineCSS(appCSS),
                 
-
+                
                 bsAlert("alert"),
                 id = "form",
                 textInput("ime", "Ime in priimek", ""),
@@ -350,17 +350,17 @@ server <- function(input, output, session) {
       } 
       else {
         
-  #===========================================Generiram page za javnost======================================
+        #===========================================Generiram page za javnost======================================
         
         tabItems(
           tabItem(
             tabName ="dashboard", class = "active",
             div(fluidRow(
-                  box(width = 12, title = 'Število novih okužb z COVID-19', plotOutput("ggp_st_okuzb"))),
-                fluidRow(
-                  box(width = 12, title = 'Skupno število potrjenih okužb z COVID-19', plotOutput("ggp_st_okuzb_skupaj"))),
-                fluidRow(
-                  box(width = 12, title = 'Stolpični diagram zasedenosti bolnišnic', plotOutput("diagram_zasedenost")))
+              box(width = 12, title = 'Število novih okužb z COVID-19', plotOutput("ggp_st_okuzb"))),
+              fluidRow(
+                box(width = 12, title = 'Skupno število potrjenih okužb z COVID-19', plotOutput("ggp_st_okuzb_skupaj"))),
+              fluidRow(
+                box(width = 12, title = 'Stolpični diagram zasedenosti bolnišnic', plotOutput("diagram_zasedenost")))
             )),
           tabItem(
             tabName ="Bolnisnice",
@@ -393,15 +393,15 @@ server <- function(input, output, session) {
   })
   output$results_h <- DT::renderDataTable({
     dbGetQuery(conn, build_sql("SELECT 
-                                  id_bolnika, ime_bolnika, id_zdravnika, ime_zdravnika
-                                FROM bolnik 
-                                  LEFT JOIN (SELECT ime AS ime_bolnika, davcna_st FROM oseba WHERE stanje = 'bolnik') as oseba1 ON bolnik.id_bolnika=oseba1.davcna_st
-                                  LEFT JOIN (SELECT ime AS ime_zdravnika, davcna_st FROM oseba WHERE stanje = 'zd_delavec_na_dolznosti') as oseba2 ON bolnik.id_zdravnika=oseba2.davcna_st", con=conn))
+                               id_bolnika, ime_bolnika, id_zdravnika, ime_zdravnika
+                               FROM bolnik 
+                               LEFT JOIN (SELECT ime AS ime_bolnika, davcna_st FROM oseba WHERE stanje = 'bolnik') as oseba1 ON bolnik.id_bolnika=oseba1.davcna_st
+                               LEFT JOIN (SELECT ime AS ime_zdravnika, davcna_st FROM oseba WHERE stanje = 'zd_delavec_na_dolznosti') as oseba2 ON bolnik.id_zdravnika=oseba2.davcna_st", con=conn))
   })
   
   #==========================================Polnenje DB======================================================
   observe({
-  #===========================================Checkpoint obvezna polja========================================
+    #===========================================Checkpoint obvezna polja========================================
     
     mandatoryFilled <-
       vapply(fieldsMandatory,
@@ -410,75 +410,73 @@ server <- function(input, output, session) {
              },
              logical(1))
     mandatoryFilled <- all(mandatoryFilled)
-
-
+    
+    
     shinyjs::toggleState(id = "submit", condition = mandatoryFilled)
   })
-
+  
   observeEvent(input$submit, {
     
-      dbGetQuery(conn, build_sql("INSERT INTO oseba (ime, davcna_st, naslov, datum_testiranja, stanje)
-                                             VALUES (", input$ime, ",", input$davcna, ", ", input$naslov, ",", input$dat, ", ", input$stanje,")", con = conn))
+    dbGetQuery(conn, build_sql("INSERT INTO oseba (ime, davcna_st, naslov, datum_testiranja, stanje)
+                               VALUES (", input$ime, ",", input$davcna, ", ", input$naslov, ",", input$dat, ", ", input$stanje,")", con = conn))
     
- #============================================================================================================  
+    #============================================================================================================  
     
-        if (input$agevzija == TRUE){
-          dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
-                                             VALUES (", input$davcna, ",", 9, ",", input$agevzija_j, ",", input$agevzija_dat,")", con = conn))
-        }
-        
-    
-        if (input$anzomija == TRUE){
-          dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
-                                     VALUES (", input$davcna, ",", 8, ",", input$anzomija_j, ",", input$anzomija_dat,")", con = conn))
-        }
-      
-        if (input$angina_pectoris == TRUE){
-          dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
-                                     VALUES (", input$davcna, ",",6 , ",", input$angina_pectoris_j, ",", input$angina_pectoris_dat,")", con = conn))
-        }
-        
-        if (input$dispneja == TRUE){
-          dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
-                                     VALUES (", input$davcna, ",", 7, ",", input$dispneja_j, ",", input$dispneja_dat,")", con = conn))
-        }
-        
-        if (input$glavobol == TRUE){
-          dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
-                                     VALUES (", input$davcna, ",", 1, ",", input$glavobol_j, ",", input$glavobol_dat,")", con = conn))
-        }
-        
-        if (input$mialgija == TRUE){
-          dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
-                                     VALUES (", input$davcna, ",", 5, ",", input$mialgija_j, ",", input$mialgija_dat,")", con = conn))
-        }
-        
-        if (input$sibkost == TRUE){
-          dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
-                                     VALUES (", input$davcna, ",", 4, ",", input$sibkost_j, ",", input$sibkost_dat,")", con = conn))
-        }
-        
-        if (input$tekoce_blato == TRUE){
-          dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
-                                     VALUES (", input$davcna, ",", 3, ",", input$tekoce_blato_j, ",", input$tekoce_blato_dat,")", con = conn))
-        }
-        
-        if (input$vrocina == TRUE){
-          dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
-                                         VALUES (", input$davcna, ",", 2, ",", input$vrocina_j, ",", input$vrocina_dat,")", con = conn))
-        }
-
-      
-      
-      shinyalert("OK!", "Oseba je dodana v sistem.", type = "success")
+    if (input$agevzija == TRUE){
+      dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
+                                 VALUES (", input$davcna, ",", 9, ",", input$agevzija_j, ",", input$agevzija_dat,")", con = conn))
+    }
     
     
-  })
+    if (input$anzomija == TRUE){
+      dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
+                                 VALUES (", input$davcna, ",", 8, ",", input$anzomija_j, ",", input$anzomija_dat,")", con = conn))
+    }
+    
+    if (input$angina_pectoris == TRUE){
+      dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
+                                 VALUES (", input$davcna, ",",6 , ",", input$angina_pectoris_j, ",", input$angina_pectoris_dat,")", con = conn))
+    }
+    
+    if (input$dispneja == TRUE){
+      dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
+                                 VALUES (", input$davcna, ",", 7, ",", input$dispneja_j, ",", input$dispneja_dat,")", con = conn))
+    }
+    
+    if (input$glavobol == TRUE){
+      dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
+                                 VALUES (", input$davcna, ",", 1, ",", input$glavobol_j, ",", input$glavobol_dat,")", con = conn))
+    }
+    
+    if (input$mialgija == TRUE){
+      dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
+                                 VALUES (", input$davcna, ",", 5, ",", input$mialgija_j, ",", input$mialgija_dat,")", con = conn))
+    }
+    
+    if (input$sibkost == TRUE){
+      dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
+                                 VALUES (", input$davcna, ",", 4, ",", input$sibkost_j, ",", input$sibkost_dat,")", con = conn))
+    }
+    
+    if (input$tekoce_blato == TRUE){
+      dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
+                                 VALUES (", input$davcna, ",", 3, ",", input$tekoce_blato_j, ",", input$tekoce_blato_dat,")", con = conn))
+    }
+    
+    if (input$vrocina == TRUE){
+      dbGetQuery(conn, build_sql("INSERT INTO ima (id_pacienta, id_simptomi, jakost, datum_pojavitve)
+                                 VALUES (", input$davcna, ",", 2, ",", input$vrocina_j, ",", input$vrocina_dat,")", con = conn))
+    }
+    
+    
+    
+    shinyalert("OK!", "Oseba je dodana v sistem.", type = "success")
+    
+    
+    })
   observeEvent(input$submit, {
     reset("body")
   })
+  
+}
 
-  }
-
-runApp(list(ui = ui, server = server))
- 
