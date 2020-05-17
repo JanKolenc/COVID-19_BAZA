@@ -2,9 +2,9 @@ setwd("~/OPB-shiny/podatki")
 library(knitr)
 library(dplyr)
 library(readr)
+library(utf8)
 
-
-
+options(encoding = 'UTF-8')
 #=============================================OSEBA======================================================================
 oseba <- read_csv("oseba.csv", col_types = cols(
   Ime_priimek = col_character(),
@@ -27,7 +27,9 @@ lokacije <- read_csv("lokacije.csv",col_types = cols(
 
 #=============================================SIMPTOM======================================================================
 
-simptom <- as.data.frame(c("glavobol","vročina","tekoče blato","šibkost","mialgija","angina pectoris","dispneja","anozmija","agevzija"))
+simptomi <- c("cefalgija","hipertremija","diareja","astenija","mialgija","angina pectoris","dispneja","anozmija","agevzija")
+simptomi <- as_utf8(simptomi)
+simptom <- as.data.frame(simptomi)
 simptom$id <- rownames(simptom)
 colnames(simptom) <- c("simptom","id")
 simptom <- simptom[c("id","simptom")]

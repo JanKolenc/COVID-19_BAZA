@@ -5,7 +5,7 @@ library(RPostgreSQL)
 setwd("~/OPB-shiny/app")
 source("auth.R")
 setwd("~/OPB-shiny/uvoz")
-source("tabele.R")
+source("tabele.R", encoding = "UTF-8")
 
 
 
@@ -83,7 +83,7 @@ insert_data <- function(){
     conn <- dbConnect(drv, dbname = db, host = host, user = user, password = password)
     
     dbWriteTable(conn, name="oseba", oseba, append=T, row.names=FALSE)
-    dbWriteTable(conn, name="simptom", simptom, append=T, row.names=FALSE)
+    dbWriteTable(conn, name="simptom", simptom, append=T, row.names=FALSE, encoding = "UTF-8")
     dbWriteTable(conn, name="lokacije", lokacije, append=T, row.names=FALSE)
     dbWriteTable(conn, name="ima", ima, append=T, row.names=FALSE)
     dbWriteTable(conn, name="bolnik", bolnik, append=T, row.names=FALSE)
