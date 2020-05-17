@@ -2,9 +2,9 @@ setwd("~/OPB-shiny/podatki")
 library(knitr)
 library(dplyr)
 library(readr)
+library(utf8)
 
-
-
+options(encoding = 'UTF-8')
 #=============================================OSEBA======================================================================
 oseba <- read_csv("oseba.csv", col_types = cols(
   Ime_priimek = col_character(),
@@ -18,8 +18,6 @@ colnames(oseba) <- c("ime","davcna_st","naslov","datum_testiranja","stanje")
 
 #=============================================LOKACIJE-1.del======================================================================
 
-
-
 lokacije <- read_csv("lokacije.csv",col_types = cols(
   id = col_integer(),
   lokacija = col_character(),
@@ -27,10 +25,11 @@ lokacije <- read_csv("lokacije.csv",col_types = cols(
   st_zdravnikov = col_integer()
 ))
 
-
 #=============================================SIMPTOM======================================================================
 
-simptom <- as.data.frame(c("glavobol","vročina","tekoče blato","šibkost","mialgija","angina pectoris","dispneja","anozmija","agevzija"))
+simptomi <- c("cefalgija","hipertremija","diareja","astenija","mialgija","angina pectoris","dispneja","anozmija","agevzija")
+simptomi <- as_utf8(simptomi)
+simptom <- as.data.frame(simptomi)
 simptom$id <- rownames(simptom)
 colnames(simptom) <- c("simptom","id")
 simptom <- simptom[c("id","simptom")]
@@ -43,6 +42,7 @@ zd_ustanova_id_c <- sample.int(length(rownames(lokacije)),length(zd_delavec_na_d
 zd_delavec_na_dolznosti <- as.data.frame(zd_delavec_na_dolznosti_c)
 zd_delavec_na_dolznosti$zd_ustanova_id <- zd_ustanova_id_c
 colnames(zd_delavec_na_dolznosti)<- c("id","zd_ustanova_id_c")
+
 #=============================================LOKACIJE-2.del======================================================================
 
 st_postelj <- c()
@@ -55,7 +55,6 @@ for (i in 1:length(lokacije$id)){
 
 lokacije$st_postelj <- st_postelj
 lokacije$st_zdravnikov <- st_zdravnikov
-
 
 #=============================================BOLNIK======================================================================
 
@@ -94,11 +93,3 @@ ima$id_simptomi <- simptomi_c
 ima$jakost <- jakost_c
 ima$datum_pojavitve <- datum_pojavitve_c
 colnames(ima) <- c("id_pacienta","id_simptomi","jakost","datum_pojavitve")
-
-
-#=============================================JE_ZDRAVLJEN======================================================================
-
-
-
-
-

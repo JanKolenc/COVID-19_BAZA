@@ -5,7 +5,7 @@ library(RPostgreSQL)
 setwd("~/OPB-shiny/app")
 source("auth.R")
 setwd("~/OPB-shiny/uvoz")
-source("tabele.R")
+source("tabele.R", encoding = "UTF-8")
 
 
 
@@ -52,24 +52,25 @@ ustvari_tabele <- function(){
     
     
     ima <- dbSendQuery(conn, build_sql("CREATE TABLE ima (
-                                              id_pacienta bigserial REFERENCES oseba(davcna_st),
-                                              id_simptomi bigserial REFERENCES simptom(id),
+                                              id_pacienta bigint REFERENCES oseba(davcna_st),
+                                              id_simptomi bigint REFERENCES simptom(id),
                                               jakost integer,
                                               datum_pojavitve date,
-                                              unique (id_pacienta, id_simptomi))", con=conn))
+                                              PRIMARY KEY (id_pacienta, id_simptomi))", con=conn))
     
     
     
     bolnik <- dbSendQuery(conn, build_sql("CREATE TABLE bolnik (
-                                             id_bolnika bigserial REFERENCES oseba(davcna_st),
-                                             id_zdravnika bigserial REFERENCES oseba(davcna_st),
+                                             id_bolnika bigint REFERENCES oseba(davcna_st),
+                                             id_zdravnika bigint REFERENCES oseba(davcna_st),
                                              hospitalizacija numeric,
-                                             unique (id_bolnika, id_zdravnika))", con=conn))
+                                             PRIMARY KEY (id_bolnika, id_zdravnika))", con=conn))
     
     
     zd_delavec_na_dolznosti <- dbSendQuery(conn, build_sql("CREATE TABLE zd_delavec_na_dolznosti (
-                                          id bigserial REFERENCES oseba(davcna_st),
-                                          zd_ustanova_id_c bigserial REFERENCES lokacije(id))", con=conn))
+                                          id bigint REFERENCES oseba(davcna_st),
+                                          zd_ustanova_id_c bigserial REFERENCES lokacije(id),
+                                          PRIMARY KEY (id))", con=conn))
     
     
    }, finally = {
@@ -82,7 +83,7 @@ insert_data <- function(){
     conn <- dbConnect(drv, dbname = db, host = host, user = user, password = password)
     
     dbWriteTable(conn, name="oseba", oseba, append=T, row.names=FALSE)
-    dbWriteTable(conn, name="simptom", simptom, append=T, row.names=FALSE)
+    dbWriteTable(conn, name="simptom", simptom, append=T, row.names=FALSE, encoding = "UTF-8")
     dbWriteTable(conn, name="lokacije", lokacije, append=T, row.names=FALSE)
     dbWriteTable(conn, name="ima", ima, append=T, row.names=FALSE)
     dbWriteTable(conn, name="bolnik", bolnik, append=T, row.names=FALSE)
@@ -137,5 +138,3 @@ delete_table()
 ustvari_tabele()
 insert_data()
 pravice()
-
-
