@@ -111,13 +111,17 @@ server <- function(input, output, session) {
   USER <- reactiveValues(login = login)
   
   #===========================================DB conneciton==============================================================
-  
+  DB_PORT <- as.integer(Sys.getenv("POSTGRES_PORT"))
+  if (is.na(DB_PORT)) {
+    DB_PORT <- 5432
+  }
   drv <- dbDriver("PostgreSQL")
-  conn <- dbConnect(drv, dbname = db, host = host, user = user, password = password)
+  conn <- dbConnect(drv, dbname = db, host = host, user = user, password = password, port=DB_PORT)
   
   dbGetQuery(conn, "SET CLIENT_ENCODING TO 'utf8'; SET NAMES 'utf8'")
   
   cancel.onSessionEnded <- session$onSessionEnded(function() {
+    sapply(dbListResults(conn), dbClearResult)
     dbDisconnect(conn) 
   })
   credentials <- dbGetQuery(conn, build_sql("SELECT * FROM credentials", con=conn))
