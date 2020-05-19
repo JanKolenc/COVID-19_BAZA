@@ -22,19 +22,9 @@ library(grid)
 
 options(encoding = 'UTF-8')
 
-# setwd("~/OPB-shiny/app")
-# source("fte_theme.R")
-# source("credentials.R")
-# db = 0
-# try(source("auth.R"))
-# if (db == 0){source("auth_public.R")}
-source("auth.R")
+source("auth_public.R")
 source("credentials.R")
-
-#===========================================Generiram Login Page======================================================
-
-#===========================================lepotni nastavki=====================================================
-
+source("fte_theme.R")
 
 
 #===========================================Kar bo obvezno za dopolnit v obrazec======================================================

@@ -64,7 +64,7 @@ ustvari_tabele <- function(){
                                              id_bolnika bigint REFERENCES oseba(davcna_st),
                                              id_zdravnika bigint REFERENCES oseba(davcna_st),
                                              hospitalizacija numeric,
-                                             PRIMARY KEY (id_bolnika, id_zdravnika))", con=conn))
+                                             PRIMARY KEY (id_bolnika))", con=conn))
     
     
     zd_delavec_na_dolznosti <- dbSendQuery(conn, build_sql("CREATE TABLE zd_delavec_na_dolznosti (
