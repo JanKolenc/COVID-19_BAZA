@@ -22,9 +22,9 @@ library(grid)
 
 options(encoding = 'UTF-8')
 
-source("auth_public.R")
-source("credentials.R")
 source("fte_theme.R")
+source("credentials.R")
+source("auth_public.R")
 
 
 #===========================================Kar bo obvezno za dopolnit v obrazec======================================================
@@ -42,6 +42,7 @@ appCSS <-
   ".mandatory_star { color: red; }"
 
 server <- function(input, output, session) {
+  
   loginpage <- div(id = "loginpage", style = "width: 500px; max-width: 100%; margin: 0 auto; padding: 20px;",
                    wellPanel(
                      tags$h2("Prijava", class = "text-center", style = "padding-top: 0;color:#333; font-weight:600;"),
@@ -468,5 +469,4 @@ server <- function(input, output, session) {
     reset("body")
   })
   
-}
-
+    }

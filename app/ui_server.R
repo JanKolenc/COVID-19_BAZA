@@ -284,72 +284,88 @@ server <- function(input, output, session) {
                                 }")),
                 
   #==========================================Obrazec za dodajanje ljudi=========================================================
-
+                            
+                #==========================================Obrazec za dodajanje ljudi=========================================================
+                
                 useShinyjs(),
                 shinyjs::inlineCSS(appCSS),
-                
-
                 bsAlert("alert"),
                 id = "form",
                 textInput("ime", "Ime in priimek", ""),
-                
                 textInput("naslov", "Naslov"),
-                
                 textInput("davcna", "Davčna števiilka"),
-                
-                selectInput("zdravnik", "Zdravnik", zdravniki),
-                
                 dateInput("dat", "Datum vpisa v evidenco", format = "dd-mm-yyyy"),
-                
                 selectInput("stanje", "Stanje", c("bolnik", "zd_delavec_na_dolznosti", "zdrav")),
-                
-                checkboxInput("hospitalizacija", "Ali je potrebna hospitalizacija?", FALSE),
-                
-                checkboxInput("glavobol", "Glavobol", FALSE),
-                numericInput("glavobol_j", "Jakost glavobola", value = NULL, min = 1, max = 10, step =  1),
-                dateInput("glavobol_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
-                
-                checkboxInput("vrocina", "Vročina", FALSE),
-                numericInput("vrocina_j", "Jakost vročine", value = NULL, min = 1, max = 10, step =  1),
-                dateInput("vrocina_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
-                
-                checkboxInput("tekoce_blato", "Tekoče blato", FALSE),
-                numericInput("tekoce_blato_j", "Jakost tekočega blata", value = NULL, min = 1, max = 10, step =  1),
-                dateInput("tekoce_blato_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
-                
-                checkboxInput("sibkost", "šibkost", FALSE),
-                numericInput("sibkost_j", "Jakost šibkosti", value = NULL, min = 1, max = 10, step =  1),
-                dateInput("sibkost_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
-                
-                checkboxInput("mialgija", "Mialgija", FALSE),
-                numericInput("mialgija_j", "Jakost mialgije", value = NULL, min = 1, max = 10, step =  1),
-                dateInput("mialgija_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
-                
-                checkboxInput("angina_pectoris", "Angina pectoris", FALSE),
-                numericInput("angina_pectoris_j", "Jakost angine pectoris", value = NULL, min = 1, max = 10, step =  1),
-                dateInput("angina_pectoris_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
-                
-                checkboxInput("dispneja", "Dispneja", FALSE),
-                numericInput("dispneja_j", "Jakost dispneje", value = NULL, min = 1, max = 10, step =  1),
-                dateInput("dispneja_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
-                
-                checkboxInput("anzomija", "Anzomija", FALSE),
-                numericInput("anzomija_j", "Jakost anzomije", value = NULL, min = 1, max = 10, step =  1),
-                dateInput("anzomija_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
-                
-                checkboxInput("agevzija", "Agevzija", FALSE),
-                numericInput("agevzija_j", "Jakost agevzije", value = NULL, min = 1, max = 10, step =  1),
-                dateInput("agevzija_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
-                
+                uiOutput("obrazec.pogojno"),
                 useShinyalert(),
                 actionButton("submit", "Dodaj v bazo", class = "btn-primary")
-                )
-                )
-              )
-        )
-      } 
-      else {
-        
+                )))
+
+      #           useShinyjs(),
+      #           shinyjs::inlineCSS(appCSS),
+      #           
+      # 
+      #           bsAlert("alert"),
+      #           id = "form",
+      #           textInput("ime", "Ime in priimek", ""),
+      #           
+      #           textInput("naslov", "Naslov"),
+      #           
+      #           textInput("davcna", "Davčna števiilka"),
+      #           
+      #           selectInput("zdravnik", "Zdravnik", zdravniki),
+      #           
+      #           dateInput("dat", "Datum vpisa v evidenco", format = "dd-mm-yyyy"),
+      #           
+      #           selectInput("stanje", "Stanje", c("bolnik", "zd_delavec_na_dolznosti", "zdrav")),
+      #           
+      #           checkboxInput("hospitalizacija", "Ali je potrebna hospitalizacija?", FALSE),
+      #           
+      #           checkboxInput("glavobol", "Glavobol", FALSE),
+      #           numericInput("glavobol_j", "Jakost glavobola", value = NULL, min = 1, max = 10, step =  1),
+      #           dateInput("glavobol_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
+      #           
+      #           checkboxInput("vrocina", "Vročina", FALSE),
+      #           numericInput("vrocina_j", "Jakost vročine", value = NULL, min = 1, max = 10, step =  1),
+      #           dateInput("vrocina_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
+      #           
+      #           checkboxInput("tekoce_blato", "Tekoče blato", FALSE),
+      #           numericInput("tekoce_blato_j", "Jakost tekočega blata", value = NULL, min = 1, max = 10, step =  1),
+      #           dateInput("tekoce_blato_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
+      #           
+      #           checkboxInput("sibkost", "šibkost", FALSE),
+      #           numericInput("sibkost_j", "Jakost šibkosti", value = NULL, min = 1, max = 10, step =  1),
+      #           dateInput("sibkost_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
+      #           
+      #           checkboxInput("mialgija", "Mialgija", FALSE),
+      #           numericInput("mialgija_j", "Jakost mialgije", value = NULL, min = 1, max = 10, step =  1),
+      #           dateInput("mialgija_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
+      #           
+      #           checkboxInput("angina_pectoris", "Angina pectoris", FALSE),
+      #           numericInput("angina_pectoris_j", "Jakost angine pectoris", value = NULL, min = 1, max = 10, step =  1),
+      #           dateInput("angina_pectoris_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
+      #           
+      #           checkboxInput("dispneja", "Dispneja", FALSE),
+      #           numericInput("dispneja_j", "Jakost dispneje", value = NULL, min = 1, max = 10, step =  1),
+      #           dateInput("dispneja_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
+      #           
+      #           checkboxInput("anzomija", "Anzomija", FALSE),
+      #           numericInput("anzomija_j", "Jakost anzomije", value = NULL, min = 1, max = 10, step =  1),
+      #           dateInput("anzomija_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
+      #           
+      #           checkboxInput("agevzija", "Agevzija", FALSE),
+      #           numericInput("agevzija_j", "Jakost agevzije", value = NULL, min = 1, max = 10, step =  1),
+      #           dateInput("agevzija_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy"),
+      #           
+      #           useShinyalert(),
+      #           actionButton("submit", "Dodaj v bazo", class = "btn-primary")
+      #           )
+      #           )
+      #         )
+      #   )
+      # } 
+      # else {
+      #   
   #===========================================Generiram page za javnost======================================
         
         tabItems(
