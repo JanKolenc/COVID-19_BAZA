@@ -1,6 +1,5 @@
 library(knitr)
 library(dplyr)
-library(readr)
 library(ggplot2)
 library(tidyr)
 library(maptools)
@@ -140,7 +139,6 @@ server <- function(input, output, session) {
           menuItem("Pacienti", tabName = "Pacienti", icon = icon("th")),
           menuItem("Hospitalizirani", tabName = "Hospitalizirani", icon = icon("th")),
           menuItem("Simptomi", tabName = "Simptomi", icon = icon("th")),
-          menuItem("Ima", tabName = "Ima", icon = icon("th")),
           menuItem("Obrazec", tabName = "Obrazec", icon = icon("th"))
         )
       }
@@ -219,6 +217,159 @@ server <- function(input, output, session) {
             axis.title.y = element_text(color="black", size=11, face="bold"))
     plot(diagram_zasedenost)})
   
+
+  
+
+  
+  output$obrazec.glavobol <- renderUI({
+    validate(need(!is.null(input$glavobol), ""))
+    div({
+      if (input$glavobol) {
+        div(
+          numericInput("glavobol_j", "Jakost cefalgije", value = NULL, min = 1, max = 10, step =  1),
+          dateInput("glavobol_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy")
+        )
+      }
+    })
+  })
+  
+  output$obrazec.vrocina <- renderUI({
+    validate(need(!is.null(input$vrocina), ""))
+    div({
+      if (input$vrocina) {
+        div(
+          numericInput("vrocina_j", "Jakost hipertermije", value = NULL, min = 1, max = 10, step =  1),
+          dateInput("vrocina_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy")
+        )
+      }
+    })
+  })
+  
+  output$obrazec.tekoce_blato <- renderUI({
+    validate(need(!is.null(input$tekoce_blato), ""))
+    div({
+      if (input$tekoce_blato) {
+        div(
+          numericInput("tekoce_blato_j", "Jakost diareje", value = NULL, min = 1, max = 10, step =  1),
+          dateInput("tekoce_blato_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy")
+        )
+      }
+    })
+  })
+  
+  output$obrazec.sibkost <- renderUI({
+    validate(need(!is.null(input$sibkost), ""))
+    div({
+      if (input$sibkost) {
+        div(
+          numericInput("sibkost_j", "Jakost astenije", value = NULL, min = 1, max = 10, step =  1),
+          dateInput("sibkost_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy")
+        )
+      }
+    })
+  })
+  
+  output$obrazec.mialgija <- renderUI({
+    validate(need(!is.null(input$mialgija), ""))
+    div({
+      if (input$mialgija) {
+        div(
+          numericInput("mialgija_j", "Jakost mialgije", value = NULL, min = 1, max = 10, step =  1),
+          dateInput("mialgija_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy")
+        )
+      }
+    })
+  })
+  
+  
+  
+  output$obrazec.angina_pectoris <- renderUI({
+    validate(need(!is.null(input$angina_pectoris), ""))
+    div({
+      if (input$angina_pectoris) {
+        div(
+          numericInput("angina_pectoris_j", "Jakost angine pectoris", value = NULL, min = 1, max = 10, step =  1),
+          dateInput("angina_pectoris_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy")
+        )
+      }
+    })
+  })
+  
+  
+  output$obrazec.dispneja <- renderUI({
+    validate(need(!is.null(input$dispneja), ""))
+    div({
+      if (input$dispneja) {
+        div(
+          numericInput("dispneja_j", "Jakost dispneje", value = NULL, min = 1, max = 10, step =  1),
+          dateInput("dispneja_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy")
+        )
+      }
+    })
+  })
+  
+  output$obrazec.anzomija <- renderUI({
+    validate(need(!is.null(input$anzomija), ""))
+    div({
+      if (input$anzomija) {
+        div(
+          numericInput("anzomija_j", "Jakost anzomije", value = NULL, min = 1, max = 10, step =  1),
+          dateInput("anzomija_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy")
+        )
+      }
+    })
+  })
+  
+  output$obrazec.agevzija <- renderUI({
+    validate(need(!is.null(input$agevzija), ""))
+    div({
+      if (input$agevzija) {
+        div(
+          numericInput("agevzija_j", "Jakost agevzije", value = NULL, min = 1, max = 10, step =  1),
+          dateInput("agevzija_dat", "Datum prve pojavitve zgornjega simptoma", format = "dd-mm-yyyy")
+        )
+      }
+    })
+  })
+  
+  
+    
+  output$obrazec.pogojno <- renderUI({
+    validate(need(!is.null(input$stanje), ""))
+    div({
+      if (input$stanje == "bolnik") {
+        div(
+          selectInput("zdravnik", "Zdravnik", zdravniki),
+          checkboxInput("hospitalizacija", "Ali je potrebna hospitalizacija?", FALSE),
+          checkboxInput("glavobol", "Cefalgija", FALSE),
+          uiOutput("obrazec.glavobol"),
+          checkboxInput("vrocina", "Hipertermija", FALSE),
+          uiOutput("obrazec.vrocina"),
+          checkboxInput("tekoce_blato", "Diareja", FALSE),
+          uiOutput("obrazec.tekoce_blato"),
+          checkboxInput("sibkost", "Astenija", FALSE),
+          uiOutput("obrazec.sibkost"),
+          checkboxInput("mialgija", "Mialgija", FALSE),
+          uiOutput("obrazec.mialgija"),
+          checkboxInput("angina_pectoris", "Angina pectoris", FALSE),
+          uiOutput("obrazec.angina_pectoris"),
+          checkboxInput("dispneja", "Dispneja", FALSE),
+          uiOutput("obrazec.dispneja"),
+          checkboxInput("anzomija", "Anzomija", FALSE),
+          uiOutput("obrazec.anzomija"),
+          checkboxInput("agevzija", "Agevzija", FALSE),
+          uiOutput("obrazec.agevzija")
+        )
+      } else if (input$stanje == "zd_delavec_na_dolznosti") {
+        div(
+          selectInput("ustanova", "Ustanova", c(1:10))
+        )
+      }
+    })
+  })
+  
+
+  
   #===========================================Lista zdravnikov==========================================================
   
   zdravniki <- dbGetQuery(conn, build_sql("SELECT ime FROM oseba WHERE stanje = 'zd_delavec_na_dolznosti'", con=conn))
@@ -257,13 +408,7 @@ server <- function(input, output, session) {
           tabItem(
             tabName ="Simptomi",
             fluidRow(
-              box(width = 12, title = "Simptomi", dataTableOutput('results_p'))
-            )
-          ),
-          tabItem(
-            tabName ="Ima",
-            fluidRow(
-              box(width = 12, title = "Ima", dataTableOutput('results_k'))
+              box(width = 12, title = "Simptomi", dataTableOutput('results_k'))
             )
           ),
           tabItem(
@@ -299,7 +444,7 @@ server <- function(input, output, session) {
                 uiOutput("obrazec.pogojno"),
                 useShinyalert(),
                 actionButton("submit", "Dodaj v bazo", class = "btn-primary")
-                )))
+                )
 
       #           useShinyjs(),
       #           shinyjs::inlineCSS(appCSS),
@@ -360,12 +505,12 @@ server <- function(input, output, session) {
       #           useShinyalert(),
       #           actionButton("submit", "Dodaj v bazo", class = "btn-primary")
       #           )
-      #           )
-      #         )
-      #   )
-      # } 
-      # else {
-      #   
+                )
+              )
+        )
+      }
+      else {
+
   #===========================================Generiram page za javnost======================================
         
         tabItems(
@@ -400,9 +545,6 @@ server <- function(input, output, session) {
   })
   output$results_b <- DT::renderDataTable({
     dbGetQuery(conn, build_sql("SELECT * FROM lokacije", con = conn))
-  })
-  output$results_p <-  DT::renderDataTable({
-    dbGetQuery(conn, build_sql("SELECT * FROM simptom", con = conn))
   })
   output$results_k <- DT::renderDataTable({
     dbGetQuery(conn, build_sql("SELECT * FROM ima", con=conn))
@@ -484,7 +626,10 @@ server <- function(input, output, session) {
                                          VALUES (", input$davcna, ",", 2, ",", input$vrocina_j, ",", input$vrocina_dat,")", con = conn))
         }
 
-      
+        if (input$stanje == "zd_delavec_na_dolznosti"){
+        dbGetQuery(conn, build_sql("INSERT INTO 'zd_delavec_na_dolznosti (id, zd_ustanova_id_c)
+                                         VALUES (", input$davcna, ",", input$ustanova, ")", con = conn))
+        }
       
       shinyalert("OK!", "Oseba je dodana v sistem.", type = "success")
     
