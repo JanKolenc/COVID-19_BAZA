@@ -72,11 +72,25 @@ ustvari_tabele <- function(){
                                           zd_ustanova_id_c bigserial REFERENCES lokacije(id),
                                           PRIMARY KEY (id))", con=conn))
     
+    credentials <- dbSendQuery(conn, build_sql("CREATE TABLE credentials (
+                                          username_id text PRIMARY KEY,
+                                          password text,
+                                          permission text,
+                                          stringsAsFactors text)", con=conn))
+    
     
    }, finally = {
     dbDisconnect(conn)
   })
 }
+
+
+credentials = data.frame(
+  username_id = c("jan", "aljosa","filip","gost"),
+  password   = sapply(c("opb", "opb","opb","gost"),password_store),
+  permission  = c("advanced", "advanced","advanced","basic"), 
+  stringsAsFactors = F
+)
 
 insert_data <- function(){
   tryCatch({
@@ -88,6 +102,7 @@ insert_data <- function(){
     dbWriteTable(conn, name="ima", ima, append=T, row.names=FALSE)
     dbWriteTable(conn, name="bolnik", bolnik, append=T, row.names=FALSE)
     dbWriteTable(conn, name="zd_delavec_na_dolznosti", zd_delavec_na_dolznosti, append=T, row.names=FALSE)
+    dbWriteTable(conn, name="credentials", credentials, append=T, row.names=FALSE)
 
   }, finally = {
     dbDisconnect(conn) 

@@ -26,12 +26,6 @@ host='baza.fmf.uni-lj.si'
 user='javnost'
 password='javnogeslo'
 
-credentials = data.frame(
-  username_id = c("jan", "aljosa","filip","gost"),
-  password   = sapply(c("opb", "opb","opb","gost"),password_store),
-  permission  = c("advanced", "advanced","advanced","basic"), 
-  stringsAsFactors = F
-)
 
 fte_theme <- function() {
   # Generate the colors for the chart procedurally with RColorBrewer
@@ -126,7 +120,7 @@ server <- function(input, output, session) {
   cancel.onSessionEnded <- session$onSessionEnded(function() {
     dbDisconnect(conn) 
   })
-  
+  credentials <- dbGetQuery(conn, build_sql("SELECT * FROM credentials", con=conn))
   #===========================================Access checkpoint==============================================================
   
   observe({ 

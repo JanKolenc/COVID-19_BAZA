@@ -22,7 +22,6 @@ library(grid)
 options(encoding = 'UTF-8')
 
 source("fte_theme.R")
-source("credentials.R")
 db = 0
 try(source("auth.R"))
 if (db == 0){source("auth_public.R")}
@@ -92,7 +91,7 @@ server <- function(input, output, session) {
   })
   
   #===========================================Access checkpoint==============================================================
-  
+  credentials <- dbGetQuery(conn, build_sql("SELECT * FROM credentials", con=conn))
   observe({ 
     if (USER$login == FALSE) {
       if (!is.null(input$login)) {
