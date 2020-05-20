@@ -125,6 +125,7 @@ server <- function(input, output, session) {
     dbDisconnect(conn) 
   })
   credentials <- dbGetQuery(conn, build_sql("SELECT * FROM credentials", con=conn))
+  lokacije <- dbGetQuery(conn, build_sql("SELECT id, lokacija FROM lokacije", con=conn))
   #===========================================Access checkpoint==============================================================
   
   observe({ 
@@ -396,7 +397,7 @@ server <- function(input, output, session) {
         )
       } else if (input$stanje == "zd_delavec_na_dolznosti") {
         div(
-          selectInput("ustanova", "Ustanova", c(1:10))
+          selectInput("ustanova", "Ustanova", lokacije$lokacija)
         )
       }
     })
@@ -408,6 +409,9 @@ server <- function(input, output, session) {
   
   zdravniki <- dbGetQuery(conn, build_sql("SELECT ime FROM oseba WHERE stanje = 'zd_delavec_na_dolznosti'", con=conn))
   zdravniki <- zdravniki$ime
+  
+  
+ 
   
   #===========================================Generiram zdravnikov page=================================================
   
@@ -665,8 +669,8 @@ server <- function(input, output, session) {
     }
     
     if (input$stanje == "zd_delavec_na_dolznosti"){
-      dbGetQuery(conn, build_sql("INSERT INTO 'zd_delavec_na_dolznosti (id, zd_ustanova_id_c)
-                                         VALUES (", input$davcna, ",", input$ustanova, ")", con = conn))
+      dbGetQuery(conn, build_sql("INSERT INTO zd_delavec_na_dolznosti (id, zd_ustanova_id_c)
+                                         VALUES (", input$davcna, ",","'",as.integer(filter(lokacije, lokacija=="Maribor")[1,1]),"'", ")", con = conn))
     }
     
     shinyalert("OK!", "Oseba je dodana v sistem.", type = "success")
