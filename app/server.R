@@ -582,8 +582,9 @@ server <- function(input, output, session) {
   })
   output$results_k <- DT::renderDataTable({
     dbGetQuery(conn, build_sql("SELECT 
-                                  id_pacienta, simptom, id, jakost, datum_pojavitve 
+                                  ime, id_pacienta , simptom, id, jakost, datum_pojavitve 
                                 FROM ima
+                                  LEFT JOIN oseba ON ima.id_pacienta=oseba.davcna_st
                                   LEFT JOIN simptom ON ima.id_simptomi = simptom.id", con=conn))
   })
   output$results_h <- DT::renderDataTable({
