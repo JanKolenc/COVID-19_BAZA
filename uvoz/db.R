@@ -85,16 +85,10 @@ ustvari_tabele <- function(){
 }
 
 
-credentials = data.frame(
-  username_id = c("jan", "aljosa","filip","gost"),
-  password   = sapply(c("opb", "opb","opb","gost"),password_store),
-  permission  = c("advanced", "advanced","advanced","basic"), 
-  stringsAsFactors = F
-)
-
 insert_data <- function(){
   tryCatch({
     conn <- dbConnect(drv, dbname = db, host = host, user = user, password = password)
+    credentials <- dbGetQuery(conn, build_sql("SELECT * FROM credentials", con=conn))
     
     dbWriteTable(conn, name="oseba", oseba, append=T, row.names=FALSE)
     dbWriteTable(conn, name="simptom", simptom, append=T, row.names=FALSE, encoding = "UTF-8")
